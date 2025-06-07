@@ -1,6 +1,6 @@
 # FuelUp
 
-> A modern food inventory system designed for universities — built with Next.js, TypeScript, Express, and PostgreSQL.
+A modern food inventory system designed for universities — built with Next.js, TypeScript, Express, and PostgreSQL.
 
 **FuelUp** is a real-time food inventory and management system built for Hunter College, streamlining campus food access and ensuring efficient stock control. It provides an intuitive interface for both staff and students to manage, withdraw, and track food items with precision.
 
