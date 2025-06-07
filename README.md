@@ -10,7 +10,7 @@ A modern food inventory system designed for Hunter College — built with Next.j
 
 ## 🌐 Visit The Site
 
-Feel free to check out the [project here!](https://fuelup.vercel.app/)
+Feel free to check out the [project here!](https://fueluphunter.vercel.app/)
 
 <img width="1433" alt="Screenshot 2025-06-07 at 1 43 52 PM" src="https://github.com/user-attachments/assets/7486d1fe-8849-4f0b-aa8f-f705461b9d7d" />
 
