@@ -18,15 +18,21 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Plus, Search, Minus, Settings, Scale, Trash2, AlertTriangle, Barcode, Edit, RefreshCw } from "lucide-react"
 import { Switch } from "@/components/ui/switch"
-import type { InventoryItem as OriginalInventoryItem, Category } from "@/lib/types"
+import type { InventoryItem as OriginalInventoryItem } from "@/lib/types"
+
+type Category = {
+  id: string
+  name: string
+  description?: string
+}
 
 type InventoryItem = OriginalInventoryItem & {
   hasLimit?: boolean
+  cost?: number
 }
 import { addInventoryItem, getInventoryItems, updateInventoryItem, formatTimeRestriction } from "@/lib/data"
 import Link from "next/link"
 
-// Modify newItem state to include an optional "id" property
 const initialNewItem = {
   id: "",
   name: "",
@@ -38,6 +44,7 @@ const initialNewItem = {
   unit: "item" as "item" | "kg" | "lb" | null,
   isWeighed: false,
   hasLimit: true,
+  cost: 0,
 }
 
 const getCategories = (): Category[] => {
