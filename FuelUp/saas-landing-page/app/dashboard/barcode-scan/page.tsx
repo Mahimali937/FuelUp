@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Loader2, Barcode, Search, RefreshCw } from "lucide-react"
+import { Loader2, Barcode, Search, RefreshCw, Scan } from "lucide-react"
 import { BarcodeScanner } from "@/components/barcode-scanner"
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
@@ -43,6 +43,10 @@ export default function BarcodeScanPage() {
   
   // New state to control which section is visible
   const [activeSection, setActiveSection] = useState<"search" | "update" | "add">("search")
+
+  // New states to control the inline scanning components in search and update sections
+  const [searchScannerOpen, setSearchScannerOpen] = useState(false)
+  const [updateScannerOpen, setUpdateScannerOpen] = useState(false)
 
   // Handlers for each section
   const handleSearch = async (e: React.FormEvent) => {
@@ -144,7 +148,10 @@ export default function BarcodeScanPage() {
                     placeholder="Enter barcode to search"
                   />
                 </div>
-                <div className="flex items-end">
+                <div className="flex items-end space-x-2">
+                  <Button variant="outline" onClick={() => setSearchScannerOpen(true)}>
+                    <Scan className="h-5 w-5" />
+                  </Button>
                   <Button type="submit" disabled={isLoading}>
                     {isLoading ? (
                       <>
@@ -161,6 +168,17 @@ export default function BarcodeScanPage() {
             <p className="text-sm text-muted-foreground">
               Scan or enter a barcode to search for an item.
             </p>
+            {searchScannerOpen && (
+              <div className="mt-4">
+                <BarcodeScanner
+                  onScan={(code) => {
+                    setSearchBarcode(code)
+                    setSearchScannerOpen(false)
+                  }}
+                  onClose={() => setSearchScannerOpen(false)}
+                />
+              </div>
+            )}
           </CardContent>
         </Card>
       )}
@@ -185,7 +203,10 @@ export default function BarcodeScanPage() {
                     placeholder="Enter barcode to update quantity"
                   />
                 </div>
-                <div className="flex items-end">
+                <div className="flex items-end space-x-2">
+                  <Button variant="outline" onClick={() => setUpdateScannerOpen(true)}>
+                    <Scan className="h-5 w-5" />
+                  </Button>
                   <Button type="submit" disabled={isLoading}>
                     {isLoading ? (
                       <>
@@ -202,6 +223,17 @@ export default function BarcodeScanPage() {
             <p className="text-sm text-muted-foreground">
               Scan or enter a barcode to update its quantity.
             </p>
+            {updateScannerOpen && (
+              <div className="mt-4">
+                <BarcodeScanner
+                  onScan={(code) => {
+                    setUpdateBarcode(code)
+                    setUpdateScannerOpen(false)
+                  }}
+                  onClose={() => setUpdateScannerOpen(false)}
+                />
+              </div>
+            )}
           </CardContent>
         </Card>
       )}

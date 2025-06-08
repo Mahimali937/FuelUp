@@ -1,4 +1,5 @@
 {
-  "/dashboard/orders/page": "app/dashboard/orders/page.js",
-  "/dashboard/barcode-scan/page": "app/dashboard/barcode-scan/page.js"
+  "/login/page": "app/login/page.js",
+  "/dashboard/barcode-scan/page": "app/dashboard/barcode-scan/page.js",
+  "/dashboard/page": "app/dashboard/page.js"
 }

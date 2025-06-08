@@ -499,67 +499,64 @@ export default function AnalyticsPage() {
           </div>
 
           <Card className="border-t-4 border-primary">
-            <CardHeader>
-              <CardTitle>Daily Activity Heatmap</CardTitle>
-              <CardDescription>Transaction patterns throughout the week</CardDescription>
-            </CardHeader>
-            <CardContent className="h-80 overflow-x-auto">
-              <div className="min-w-[600px]">
-                <div className="grid grid-cols-8 gap-2">
-                  <div className="font-medium text-center">Time / Day</div>
-                  {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map((day) => (
-                    <div key={day} className="font-medium text-center">
-                      {day}
+          <CardHeader>
+            <CardTitle>Daily Activity Heatmap</CardTitle>
+            <CardDescription>Transaction patterns throughout the week</CardDescription>
+          </CardHeader>
+          <CardContent className="h-80 overflow-x-auto">
+            <div className="min-w-[600px]">
+              <div className="grid grid-cols-8 gap-2">
+                <div className="font-medium text-center dark:text-white">Time / Day</div>
+                {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map((day) => (
+                  <div key={day} className="font-medium text-center dark:text-white">
+                    {day}
+                  </div>
+                ))}
+                {["Morning", "Afternoon", "Evening", "Night"].map((time) => (
+                  <>
+                    <div key={time} className="text-sm py-2 dark:text-white">
+                      {time}
                     </div>
-                  ))}
-
-                  {["Morning", "Afternoon", "Evening", "Night"].map((time) => (
-                    <>
-                      <div key={time} className="text-sm py-2">
-                        {time}
-                      </div>
-                      {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map((day) => {
-                        // Generate random activity level for demonstration
-                        // In a real app, you would calculate this from actual data
-                        const activityLevel = Math.floor(Math.random() * 4) // 0-3: low, medium, high, very high
-                        let bgColor
-                        switch (activityLevel) {
-                          case 0:
-                            bgColor = "bg-green-100"
-                            break
-                          case 1:
-                            bgColor = "bg-green-200"
-                            break
-                          case 2:
-                            bgColor = "bg-green-300"
-                            break
-                          case 3:
-                            bgColor = "bg-green-400"
-                            break
-                          default:
-                            bgColor = "bg-gray-100"
-                        }
-                        return (
-                          <div
-                            key={`${day}-${time}`}
-                            className={`h-10 rounded ${bgColor} flex items-center justify-center text-xs`}
-                          >
-                            {activityLevel === 0
-                              ? "Low"
-                              : activityLevel === 1
-                                ? "Medium"
-                                : activityLevel === 2
-                                  ? "High"
-                                  : "Very High"}
-                          </div>
-                        )
-                      })}
-                    </>
-                  ))}
-                </div>
+                    {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map((day) => {
+                      const activityLevel = Math.floor(Math.random() * 4)
+                      let bgColor
+                      switch (activityLevel) {
+                        case 0:
+                          bgColor = "bg-green-100"
+                          break
+                        case 1:
+                          bgColor = "bg-green-200"
+                          break
+                        case 2:
+                          bgColor = "bg-green-300"
+                          break
+                        case 3:
+                          bgColor = "bg-green-400"
+                          break
+                        default:
+                          bgColor = "bg-gray-100"
+                      }
+                      return (
+                        <div
+                          key={`${day}-${time}`}
+                          className={`h-10 rounded ${bgColor} flex items-center justify-center text-xs dark:text-black`}
+                        >
+                          {activityLevel === 0
+                            ? "Low"
+                            : activityLevel === 1
+                              ? "Medium"
+                              : activityLevel === 2
+                                ? "High"
+                                : "Very High"}
+                        </div>
+                      )
+                    })}
+                  </>
+                ))}
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </CardContent>
+        </Card>
         </TabsContent>
 
         <TabsContent value="detailed" className="space-y-4">
@@ -627,31 +624,31 @@ export default function AnalyticsPage() {
             </CardHeader>
             <CardContent className="h-80">
               <div className="flex h-full items-center justify-center flex-col gap-4">
-                <div className="w-full max-w-md bg-amber-100 rounded-lg p-6 text-center">
-                  <h3 className="font-bold text-lg mb-2">Top Trending Items</h3>
-                  <ul className="space-y-2 text-left">
-                    <li className="flex justify-between">
-                      <span>Rice</span>
-                      <span className="text-green-600">↑ 24%</span>
-                    </li>
-                    <li className="flex justify-between">
-                      <span>Lentils</span>
-                      <span className="text-green-600">↑ 18%</span>
-                    </li>
-                    <li className="flex justify-between">
-                      <span>Canned Soup</span>
-                      <span className="text-green-600">↑ 15%</span>
-                    </li>
-                    <li className="flex justify-between">
-                      <span>Cereal</span>
-                      <span className="text-red-600">↓ 8%</span>
-                    </li>
-                    <li className="flex justify-between">
-                      <span>Bread</span>
-                      <span className="text-red-600">↓ 5%</span>
-                    </li>
-                  </ul>
-                </div>
+                  <div className="w-full max-w-md bg-amber-100 rounded-lg p-6 text-center">
+          <h3 className="font-bold text-lg mb-2 dark:text-black">Top Trending Items</h3>
+          <ul className="space-y-2 text-left dark:text-black">
+            <li className="flex justify-between">
+              <span>Rice</span>
+              <span className="text-green-600">↑ 24%</span>
+            </li>
+            <li className="flex justify-between">
+              <span>Lentils</span>
+              <span className="text-green-600">↑ 18%</span>
+            </li>
+            <li className="flex justify-between">
+              <span>Canned Soup</span>
+              <span className="text-green-600">↑ 15%</span>
+            </li>
+            <li className="flex justify-between">
+              <span>Cereal</span>
+              <span className="text-red-600">↓ 8%</span>
+            </li>
+            <li className="flex justify-between">
+              <span>Bread</span>
+              <span className="text-red-600">↓ 5%</span>
+            </li>
+          </ul>
+        </div>
 
                 <p className="text-muted-foreground text-sm text-center max-w-md">
                   Note: Trend data is based on month-over-month changes in item popularity. Positive percentages
@@ -811,12 +808,12 @@ export default function AnalyticsPage() {
                             <TableCell className="text-right">
                               {product.popularityScore.toFixed(2)}
                               {product.popularityScore > 1 && (
-                                <Badge variant="outline" className="ml-2 bg-green-50">
+                                <Badge variant="outline" className="ml-2 bg-green-50 dark:text-black">
                                   High
                                 </Badge>
                               )}
                               {product.popularityScore < 0.1 && (
-                                <Badge variant="outline" className="ml-2 bg-red-50">
+                                <Badge variant="outline" className="ml-2 bg-red-50  dark:text-black">
                                   Low
                                 </Badge>
                               )}
@@ -868,20 +865,19 @@ export default function AnalyticsPage() {
                     .map((product, index) => (
                       <div
                         key={index}
-                        className="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-100"
-                      >
-                        <div>
-                          <p className="font-medium">{product.name}</p>
-                          <p className="text-sm text-muted-foreground capitalize">{product.category}</p>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-sm font-medium">
-                            <span className="text-green-600">{product.totalSold} sold</span>
-                          </p>
-                          <p className="text-xs text-muted-foreground">Current stock: {product.currentStock}</p>
-                        </div>
-                      </div>
-                    ))}
+                        className="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-100">
+                      <div>
+                      <p className="font-medium dark:text-black">{product.name}</p>
+                      <p className="text-sm text-muted-foreground capitalize">{product.category}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-medium">
+                        <span className="text-green-600">{product.totalSold} sold</span>
+                      </p>
+                      <p className="text-xs text-muted-foreground">Current stock: {product.currentStock}</p>
+                    </div>
+                  </div>
+                   ))}
                 </div>
               </CardContent>
             </Card>
@@ -901,21 +897,21 @@ export default function AnalyticsPage() {
                         key={index}
                         className="flex items-center justify-between p-3 bg-red-50 rounded-lg border border-red-100"
                       >
-                        <div>
-                          <p className="font-medium">{product.name}</p>
-                          <p className="text-sm text-muted-foreground capitalize">{product.category}</p>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-sm font-medium">
-                            {product.totalSold === 0 ? (
-                              <span className="text-red-500">Never sold</span>
-                            ) : (
-                              <span className="text-amber-600">Low popularity</span>
-                            )}
-                          </p>
-                          <p className="text-xs text-muted-foreground">Current stock: {product.currentStock}</p>
-                        </div>
+                      <div>
+                        <p className="font-medium dark:text-black">{product.name}</p>
+                        <p className="text-sm text-muted-foreground capitalize">{product.category}</p>
                       </div>
+                      <div className="text-right">
+                        <p className="text-sm font-medium">
+                          {product.totalSold === 0 ? (
+                            <span className="text-red-500">Never sold</span>
+                          ) : (
+                            <span className="text-amber-600">Low popularity</span>
+                          )}
+                        </p>
+                        <p className="text-xs text-muted-foreground">Current stock: {product.currentStock}</p>
+                      </div>
+                    </div>
                     ))}
 
                   {filteredProductAnalytics.filter(
