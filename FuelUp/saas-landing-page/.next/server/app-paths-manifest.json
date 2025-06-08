@@ -1,7 +1,4 @@
 {
-  "/login/page": "app/login/page.js",
-  "/page": "app/page.js",
-  "/dashboard/analytics/page": "app/dashboard/analytics/page.js",
-  "/dashboard/inventory/page": "app/dashboard/inventory/page.js",
-  "/dashboard/barcode-scan/page": "app/dashboard/barcode-scan/page.js"
+  "/dashboard/barcode-scan/page": "app/dashboard/barcode-scan/page.js",
+  "/dashboard/analytics/page": "app/dashboard/analytics/page.js"
 }
