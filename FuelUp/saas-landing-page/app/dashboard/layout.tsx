@@ -153,10 +153,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   href={item.href}
                   className={`group flex items-center px-4 py-3 text-sm font-medium rounded-md ${
                     pathname === item.href
-                      ? "bg-primary text-black"
-                      : item.name === "Browse Items"
-                      ? "text-gray-600 hover:bg-gray-100 dark:!text-white dark:hover:bg-gray-700"
-                      : "text-gray-600 hover:bg-gray-100 dark:text-black dark:hover:bg-gray-700"
+                      ? "bg-primary text-black dark:bg-primary dark:text-white"
+                      : "text-gray-600 hover:bg-gray-100 dark:!text-white dark:hover:bg-gray-700"
                   }`}
                 >
                   {item.icon}
@@ -221,10 +219,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                       onClick={toggleMobileMenu}
                       className={`group flex items-center px-4 py-3 text-base font-medium rounded-md ${
                         pathname === item.href
-                          ? "bg-primary text-black"
-                          : item.name === "Browse Items"
-                          ? "text-gray-600 hover:bg-gray-100 dark:!text-white dark:hover:bg-gray-700"
-                          : "text-gray-600 hover:bg-gray-100 dark:text-black dark:hover:bg-gray-700"
+                          ? "bg-primary text-black dark:bg-primary dark:text-white"
+                          : "text-gray-600 hover:bg-gray-100 dark:!text-white dark:hover:bg-gray-700"
                       }`}
                     >
                       {item.icon}

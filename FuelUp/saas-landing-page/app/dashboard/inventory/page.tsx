@@ -21,7 +21,7 @@ import { Switch } from "@/components/ui/switch"
 import type { InventoryItem, Category } from "@/lib/types"
 import { addInventoryItem, getInventoryItems, updateInventoryItem, formatTimeRestriction } from "@/lib/data"
 
-// Add this at the beginning of the file, right after the imports
+// Add this function at the top of the file to get categories
 const getCategories = (): Category[] => {
   if (typeof window === "undefined") return []
 
@@ -45,7 +45,6 @@ const getCategories = (): Category[] => {
     { id: "other",      name: "Other",      description: "Miscellaneous items" },
   ]
 }
-
 
 export default function InventoryPage() {
   const [items, setItems] = useState<InventoryItem[]>([])
@@ -338,7 +337,6 @@ export default function InventoryPage() {
                     <Select
                       value={newItem.unit ?? undefined}
                       onValueChange={(value: string) => {
-                        // Validate the value before setting it
                         if (value === "kg" || value === "lb" || value === "item") {
                           setNewItem({ ...newItem, unit: value as "item" | "kg" | "lb" })
                         }
@@ -480,7 +478,9 @@ export default function InventoryPage() {
                         <div
                           className={`h-10 w-10 rounded-full ${getColorForCategory(item.category)} flex items-center justify-center`}
                         >
-                          <span className="text-xs font-bold uppercase">{item.category.charAt(0)}</span>
+                          <span className="text-xs font-bold uppercase dark:!text-black">
+                            {item.category.charAt(0)}
+                          </span>
                         </div>
                         <div>
                           <span className="font-medium">{item.name}</span>
@@ -508,7 +508,10 @@ export default function InventoryPage() {
                       <>
                         <TableCell className="text-center">
                           <span className="text-sm">
-                            Max {item.isWeighed ? `${item.studentLimit.toFixed(2)} ${item.unit}` : item.studentLimit}{" "}
+                            Max{" "}
+                            {item.isWeighed
+                              ? `${item.studentLimit.toFixed(2)} ${item.unit}`
+                              : item.studentLimit}{" "}
                             per student / {formatTimeRestriction(item.limitDuration, item.limitDurationMinutes || 0)}
                           </span>
                         </TableCell>
