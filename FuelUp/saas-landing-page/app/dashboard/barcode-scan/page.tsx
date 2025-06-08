@@ -150,7 +150,7 @@ export default function BarcodeScanPage() {
                 </div>
                 <div className="flex items-end space-x-2">
                   <Button variant="outline" onClick={() => setSearchScannerOpen(true)}>
-                    <Scan className="h-5 w-5" />
+                    <Barcode className="h-5 w-5" />
                   </Button>
                   <Button type="submit" disabled={isLoading}>
                     {isLoading ? (
@@ -205,7 +205,7 @@ export default function BarcodeScanPage() {
                 </div>
                 <div className="flex items-end space-x-2">
                   <Button variant="outline" onClick={() => setUpdateScannerOpen(true)}>
-                    <Scan className="h-5 w-5" />
+                    <Barcode className="h-5 w-5" />
                   </Button>
                   <Button type="submit" disabled={isLoading}>
                     {isLoading ? (
