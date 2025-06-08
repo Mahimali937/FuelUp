@@ -18,13 +18,14 @@ import {
   Tag,
   Sun,
   Moon,
+  Barcode,
+  ShoppingBag,
 } from "lucide-react"
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [userType, setUserType] = useState("")
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  // New dark mode state
   const [darkMode, setDarkMode] = useState(false)
   const router = useRouter()
   const pathname = usePathname()
@@ -49,6 +50,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     setIsAuthenticated(true)
     setUserType(userTypeValue || "")
   }, [pathname, router])
+
+  // Barcode parameter check: if barcode exists, and user is staff, navigate to inventory with barcode
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const barcodeParam = params.get("barcode")
+    if (barcodeParam && userType === "staff") {
+      router.push(`/dashboard/inventory?barcode=${barcodeParam}`)
+    }
+  }, [router, userType])
 
   // Toggle dark mode class on the document element
   useEffect(() => {
@@ -77,7 +87,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   // Determine if the current user is admin (staff)
   const isAdmin = userType === "staff"
 
-  // Navigation items
+  // Navigation items (database-related items removed)
   const navItems = [
     {
       name: "Dashboard",
@@ -89,6 +99,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       name: "Inventory",
       href: "/dashboard/inventory",
       icon: <Package className="h-5 w-5" />,
+      staffOnly: true,
+    },
+    {
+      name: "Barcode Scanner",
+      href: "/dashboard/barcode-scan",
+      icon: <Barcode className="h-5 w-5" />,
       staffOnly: true,
     },
     {
@@ -118,7 +134,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   ]
 
   if (!isAuthenticated) {
-    return null // Don't render anything until authentication check is complete
+    return null // Don't render until authentication check is complete
   }
 
   return (
@@ -132,6 +148,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           className="bg-white dark:bg-black"
         >
           {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          <span className="sr-only">Toggle sidebar</span>
         </Button>
       </div>
 
