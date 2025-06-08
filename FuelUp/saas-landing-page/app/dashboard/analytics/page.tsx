@@ -12,6 +12,14 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { ChevronDown, ChevronUp, Search, AlertTriangle, TrendingUp, TrendingDown } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu"
+import { Button } from "@/components/ui/button"
+import { RefreshCw, Download, FileText } from "lucide-react"
 
 export default function AnalyticsPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([])
@@ -45,6 +53,59 @@ export default function AnalyticsPage() {
   const [productSortField, setProductSortField] = useState("totalSold")
   const [productSortDirection, setProductSortDirection] = useState<"asc" | "desc">("desc")
   const [timeRange, setTimeRange] = useState("all") // all, week, month
+
+  // Dummy states and functions for download report functionality
+  const [refreshing, setRefreshing] = useState(false)
+  const [isGeneratingReport, setIsGeneratingReport] = useState(false)
+  
+  const loadData = () => {
+    // Existing load data logic here...
+  }
+  
+  const generateReport = (reportType: string) => {
+    let csvData = ""
+    let fileName = ""
+
+    switch (reportType) {
+      case "popular-items":
+        fileName = "popular-items-all-time.csv"
+        // Generate CSV from popularItems state.
+        csvData = "Item,Value\n" + popularItems.map(item => `${item.name},${item.value}`).join("\n")
+        break
+      case "product-analytics":
+        fileName = "product-analytics-all-time.csv"
+        csvData = "ID,Name,Category,CurrentStock,TotalSold,PopularityScore,TurnoverRate\n" +
+          productAnalytics.map(p =>
+            `${p.id},${p.name},${p.category},${p.currentStock},${p.totalSold},${p.popularityScore},${p.turnoverRate}`
+          ).join("\n")
+        break
+      case "category-distribution":
+        fileName = "category-distribution-all-time.csv"
+        csvData = "Category,Items\n" + categoryDistribution.map(cat => `${cat.name},${cat.value}`).join("\n")
+        break
+      case "transactions":
+        fileName = "transactions-all-time.csv"
+        // For demonstration, we generate CSV from transactions
+        csvData = "User,Item,Type,Quantity,Timestamp\n" +
+          transactions.map(t => `${t.user},${t.itemName},${t.type},${t.quantity},${t.timestamp}`).join("\n")
+        break
+      default:
+        fileName = "report.csv"
+        csvData = "No report available"
+    }
+
+    const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    a.href = url
+    a.download = fileName
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+
+    alert(`Report Downloaded\n${fileName} has been downloaded successfully.`)
+  }
 
   useEffect(() => {
     // Load transaction data
@@ -210,17 +271,14 @@ export default function AnalyticsPage() {
   // Function to handle category bar click
   const handleCategoryClick = (category: string) => {
     setSelectedCategory(category)
-
     // Get category analytics data
     const categoryAnalytics = getCategoryAnalytics(category)
-
     // Transform data for display
     const itemsInCategory = categoryAnalytics.map((item) => ({
       name: item.name,
       value: item.totalSold,
       currentStock: item.currentStock,
     }))
-
     setCategoryItems(itemsInCategory)
     setCategoryItemsDialogOpen(true)
   }
@@ -253,8 +311,6 @@ export default function AnalyticsPage() {
     )
     .sort((a, b) => {
       const field = productSortField as keyof typeof a
-
-      // Handle string vs number comparison
       if (typeof a[field] === "string" && typeof b[field] === "string") {
         return productSortDirection === "asc"
           ? (a[field] as string).localeCompare(b[field] as string)
@@ -296,6 +352,41 @@ export default function AnalyticsPage() {
             <p className="text-lg text-primary mt-2">Insights and statistics about store usage</p>
           </div>
         </div>
+      </div>
+
+      {/* Download Report Controls - aligned to the right */}
+      <div className="flex justify-end gap-2">
+        <Button onClick={loadData} variant="outline" disabled={refreshing} className="flex items-center gap-2">
+          <RefreshCw className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />
+          {refreshing ? "Refreshing..." : "Refresh Data"}
+        </Button>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button disabled={isGeneratingReport}>
+              <Download className="mr-2 h-4 w-4" />
+              {isGeneratingReport ? "Generating..." : "Download Report"}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem onClick={() => generateReport("product-analytics")}>
+              <FileText className="mr-2 h-4 w-4" />
+              Product Analytics
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => generateReport("category-distribution")}>
+              <FileText className="mr-2 h-4 w-4" />
+              Category Distribution
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => generateReport("popular-items")}>
+              <FileText className="mr-2 h-4 w-4" />
+              Popular Items
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => generateReport("transactions")}>
+              <FileText className="mr-2 h-4 w-4" />
+              Transaction Log
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       <Tabs defaultValue="overview" className="space-y-4">
@@ -499,64 +590,64 @@ export default function AnalyticsPage() {
           </div>
 
           <Card className="border-t-4 border-primary">
-          <CardHeader>
-            <CardTitle>Daily Activity Heatmap</CardTitle>
-            <CardDescription>Transaction patterns throughout the week</CardDescription>
-          </CardHeader>
-          <CardContent className="h-80 overflow-x-auto">
-            <div className="min-w-[600px]">
-              <div className="grid grid-cols-8 gap-2">
-                <div className="font-medium text-center dark:text-white">Time / Day</div>
-                {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map((day) => (
-                  <div key={day} className="font-medium text-center dark:text-white">
-                    {day}
-                  </div>
-                ))}
-                {["Morning", "Afternoon", "Evening", "Night"].map((time) => (
-                  <>
-                    <div key={time} className="text-sm py-2 dark:text-white">
-                      {time}
+            <CardHeader>
+              <CardTitle>Daily Activity Heatmap</CardTitle>
+              <CardDescription>Transaction patterns throughout the week</CardDescription>
+            </CardHeader>
+            <CardContent className="h-80 overflow-x-auto">
+              <div className="min-w-[600px]">
+                <div className="grid grid-cols-8 gap-2">
+                  <div className="font-medium text-center dark:text-white">Time / Day</div>
+                  {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map((day) => (
+                    <div key={day} className="font-medium text-center dark:text-white">
+                      {day}
                     </div>
-                    {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map((day) => {
-                      const activityLevel = Math.floor(Math.random() * 4)
-                      let bgColor
-                      switch (activityLevel) {
-                        case 0:
-                          bgColor = "bg-green-100"
-                          break
-                        case 1:
-                          bgColor = "bg-green-200"
-                          break
-                        case 2:
-                          bgColor = "bg-green-300"
-                          break
-                        case 3:
-                          bgColor = "bg-green-400"
-                          break
-                        default:
-                          bgColor = "bg-gray-100"
-                      }
-                      return (
-                        <div
-                          key={`${day}-${time}`}
-                          className={`h-10 rounded ${bgColor} flex items-center justify-center text-xs dark:text-black`}
-                        >
-                          {activityLevel === 0
-                            ? "Low"
-                            : activityLevel === 1
-                              ? "Medium"
-                              : activityLevel === 2
-                                ? "High"
-                                : "Very High"}
-                        </div>
-                      )
-                    })}
-                  </>
-                ))}
+                  ))}
+                  {["Morning", "Afternoon", "Evening", "Night"].map((time) => (
+                    <>
+                      <div key={time} className="text-sm py-2 dark:text-white">
+                        {time}
+                      </div>
+                      {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map((day) => {
+                        const activityLevel = Math.floor(Math.random() * 4)
+                        let bgColor
+                        switch (activityLevel) {
+                          case 0:
+                            bgColor = "bg-green-100"
+                            break
+                          case 1:
+                            bgColor = "bg-green-200"
+                            break
+                          case 2:
+                            bgColor = "bg-green-300"
+                            break
+                          case 3:
+                            bgColor = "bg-green-400"
+                            break
+                          default:
+                            bgColor = "bg-gray-100"
+                        }
+                        return (
+                          <div
+                            key={`${day}-${time}`}
+                            className={`h-10 rounded ${bgColor} flex items-center justify-center text-xs dark:text-black`}
+                          >
+                            {activityLevel === 0
+                              ? "Low"
+                              : activityLevel === 1
+                                ? "Medium"
+                                : activityLevel === 2
+                                  ? "High"
+                                  : "Very High"}
+                          </div>
+                        )
+                      })}
+                    </>
+                  ))}
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="detailed" className="space-y-4">
@@ -624,31 +715,31 @@ export default function AnalyticsPage() {
             </CardHeader>
             <CardContent className="h-80">
               <div className="flex h-full items-center justify-center flex-col gap-4">
-                  <div className="w-full max-w-md bg-amber-100 rounded-lg p-6 text-center">
-          <h3 className="font-bold text-lg mb-2 dark:text-black">Top Trending Items</h3>
-          <ul className="space-y-2 text-left dark:text-black">
-            <li className="flex justify-between">
-              <span>Rice</span>
-              <span className="text-green-600">↑ 24%</span>
-            </li>
-            <li className="flex justify-between">
-              <span>Lentils</span>
-              <span className="text-green-600">↑ 18%</span>
-            </li>
-            <li className="flex justify-between">
-              <span>Canned Soup</span>
-              <span className="text-green-600">↑ 15%</span>
-            </li>
-            <li className="flex justify-between">
-              <span>Cereal</span>
-              <span className="text-red-600">↓ 8%</span>
-            </li>
-            <li className="flex justify-between">
-              <span>Bread</span>
-              <span className="text-red-600">↓ 5%</span>
-            </li>
-          </ul>
-        </div>
+                <div className="w-full max-w-md bg-amber-100 rounded-lg p-6 text-center">
+                  <h3 className="font-bold text-lg mb-2 dark:text-black">Top Trending Items</h3>
+                  <ul className="space-y-2 text-left dark:text-black">
+                    <li className="flex justify-between">
+                      <span>Rice</span>
+                      <span className="text-green-600">↑ 24%</span>
+                    </li>
+                    <li className="flex justify-between">
+                      <span>Lentils</span>
+                      <span className="text-green-600">↑ 18%</span>
+                    </li>
+                    <li className="flex justify-between">
+                      <span>Canned Soup</span>
+                      <span className="text-green-600">↑ 15%</span>
+                    </li>
+                    <li className="flex justify-between">
+                      <span>Cereal</span>
+                      <span className="text-red-600">↓ 8%</span>
+                    </li>
+                    <li className="flex justify-between">
+                      <span>Bread</span>
+                      <span className="text-red-600">↓ 5%</span>
+                    </li>
+                  </ul>
+                </div>
 
                 <p className="text-muted-foreground text-sm text-center max-w-md">
                   Note: Trend data is based on month-over-month changes in item popularity. Positive percentages
@@ -659,7 +750,6 @@ export default function AnalyticsPage() {
           </Card>
         </TabsContent>
 
-        {/* New Product Analytics Tab */}
         <TabsContent value="products" className="space-y-4">
           <Card className="border-t-4 border-primary">
             <CardHeader>
@@ -813,7 +903,7 @@ export default function AnalyticsPage() {
                                 </Badge>
                               )}
                               {product.popularityScore < 0.1 && (
-                                <Badge variant="outline" className="ml-2 bg-red-50  dark:text-black">
+                                <Badge variant="outline" className="ml-2 bg-red-50 dark:text-black">
                                   Low
                                 </Badge>
                               )}
@@ -865,19 +955,20 @@ export default function AnalyticsPage() {
                     .map((product, index) => (
                       <div
                         key={index}
-                        className="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-100">
-                      <div>
-                      <p className="font-medium dark:text-black">{product.name}</p>
-                      <p className="text-sm text-muted-foreground capitalize">{product.category}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm font-medium">
-                        <span className="text-green-600">{product.totalSold} sold</span>
-                      </p>
-                      <p className="text-xs text-muted-foreground">Current stock: {product.currentStock}</p>
-                    </div>
-                  </div>
-                   ))}
+                        className="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-100"
+                      >
+                        <div>
+                          <p className="font-medium dark:text-black">{product.name}</p>
+                          <p className="text-sm text-muted-foreground capitalize">{product.category}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm font-medium">
+                            <span className="text-green-600">{product.totalSold} sold</span>
+                          </p>
+                          <p className="text-xs text-muted-foreground">Current stock: {product.currentStock}</p>
+                        </div>
+                      </div>
+                    ))}
                 </div>
               </CardContent>
             </Card>
@@ -897,21 +988,21 @@ export default function AnalyticsPage() {
                         key={index}
                         className="flex items-center justify-between p-3 bg-red-50 rounded-lg border border-red-100"
                       >
-                      <div>
-                        <p className="font-medium dark:text-black">{product.name}</p>
-                        <p className="text-sm text-muted-foreground capitalize">{product.category}</p>
+                        <div>
+                          <p className="font-medium dark:text-black">{product.name}</p>
+                          <p className="text-sm text-muted-foreground capitalize">{product.category}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm font-medium">
+                            {product.totalSold === 0 ? (
+                              <span className="text-red-500">Never sold</span>
+                            ) : (
+                              <span className="text-amber-600">Low popularity</span>
+                            )}
+                          </p>
+                          <p className="text-xs text-muted-foreground">Current stock: {product.currentStock}</p>
+                        </div>
                       </div>
-                      <div className="text-right">
-                        <p className="text-sm font-medium">
-                          {product.totalSold === 0 ? (
-                            <span className="text-red-500">Never sold</span>
-                          ) : (
-                            <span className="text-amber-600">Low popularity</span>
-                          )}
-                        </p>
-                        <p className="text-xs text-muted-foreground">Current stock: {product.currentStock}</p>
-                      </div>
-                    </div>
                     ))}
 
                   {filteredProductAnalytics.filter(
