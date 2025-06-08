@@ -74,6 +74,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     setIsMobileMenuOpen(!isMobileMenuOpen)
   }
 
+  // Determine if the current user is admin (staff)
+  const isAdmin = userType === "staff"
+
   // Navigation items
   const navItems = [
     {
@@ -146,21 +149,26 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </div>
           <nav className="mt-20 flex-1 px-2 space-y-1">
             {navItems
-              .filter((item) => !item.staffOnly || userType === "staff")
-              .map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className={`group flex items-center px-4 py-3 text-sm font-medium rounded-md ${
+              .filter((item) => !item.staffOnly || isAdmin)
+              .map((item) => {
+                const baseClass = isAdmin
+                  ? (
                     pathname === item.href
-                      ? "bg-primary text-black dark:bg-primary dark:text-white"
-                      : "text-gray-600 hover:bg-gray-100 dark:!text-white dark:hover:bg-gray-700"
-                  }`}
-                >
-                  {item.icon}
-                  <span className="ml-3">{item.name}</span>
-                </Link>
-              ))}
+                      ? "bg-primary text-black dark:bg-primary dark:text-black"
+                      : "text-gray-600 hover:bg-gray-100 dark:text-white dark:hover:text-black dark:hover:bg-gray-100"
+                  )
+                  : (
+                    darkMode
+                      ? "text-white hover:bg-gray-700"
+                      : "text-black hover:bg-gray-100"
+                  )
+                return (
+                  <Link key={item.name} href={item.href} className={`group flex items-center px-4 py-3 text-sm font-medium rounded-md ${baseClass}`}>
+                    {item.icon}
+                    <span className="ml-3">{item.name}</span>
+                  </Link>
+                )
+              })}
           </nav>
         </div>
         <div className="flex-shrink-0 flex gap-2 border-t p-4">
@@ -211,22 +219,31 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </div>
               <nav className="mt-5 px-2 space-y-1">
                 {navItems
-                  .filter((item) => !item.staffOnly || userType === "staff")
-                  .map((item) => (
-                    <Link
-                      key={item.name}
-                      href={item.href}
-                      onClick={toggleMobileMenu}
-                      className={`group flex items-center px-4 py-3 text-base font-medium rounded-md ${
+                  .filter((item) => !item.staffOnly || isAdmin)
+                  .map((item) => {
+                    const baseClass = isAdmin
+                      ? (
                         pathname === item.href
-                          ? "bg-primary text-black dark:bg-primary dark:text-white"
-                          : "text-gray-600 hover:bg-gray-100 dark:!text-white dark:hover:bg-gray-700"
-                      }`}
-                    >
-                      {item.icon}
-                      <span className="ml-3">{item.name}</span>
-                    </Link>
-                  ))}
+                          ? "bg-primary text-black dark:bg-primary dark:text-black"
+                          : "text-gray-600 hover:bg-gray-100 dark:text-white dark:hover:text-black dark:hover:bg-gray-100"
+                      )
+                      : (
+                        darkMode
+                          ? "text-white hover:bg-gray-700"
+                          : "text-black hover:bg-gray-100"
+                      )
+                    return (
+                      <Link
+                        key={item.name}
+                        href={item.href}
+                        onClick={toggleMobileMenu}
+                        className={`group flex items-center px-4 py-3 text-base font-medium rounded-md ${baseClass}`}
+                      >
+                        {item.icon}
+                        <span className="ml-3">{item.name}</span>
+                      </Link>
+                    )
+                  })}
               </nav>
             </div>
             <div className="flex-shrink-0 flex gap-2 border-t p-4">
