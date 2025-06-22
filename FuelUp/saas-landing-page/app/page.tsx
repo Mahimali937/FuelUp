@@ -52,7 +52,7 @@ export default function Home() {
             </div>
             <h2 className="mt-4 text-3xl font-bold text-secondary">Welcome to FuelUp</h2>
             <p className="mt-2 text-gray-600 text-lg">
-              Our mission is to fight food insecurity on campus by providing free food and essential items to Hunter college
+              Our mission is to fight food insecurity on campus by providing free food and essential items to Hunter College
               students.
             </p>
           </div>
